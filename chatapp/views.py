@@ -15,14 +15,18 @@ def send_message(request, room_name):
     serializer = ChatMessageSerializer(data=request.data)
     if serializer.is_valid():
         message = serializer.validated_data['message']
+        if message is not None:
+            ip=request.META.get('REMOTE_ADDR')
+            print(ip,"==================")
         
-        # send the message to the chat consumer here
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"chat_{room_name}" , {
-                "type": "chat.message", 
-                "message": message,
-                }
-        )
-        return Response({'message': message})
+            # send the message to the chat consumer here
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"chat_{room_name}" , {
+                    "type": "chat.message", 
+                    "message": message,
+                    "ip":ip
+                    }
+            )
+            return Response({'message': message})
     return Response(serializer.errors, status=400)
