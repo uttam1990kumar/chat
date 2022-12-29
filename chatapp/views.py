@@ -18,7 +18,7 @@ def send_message(request, room_name):
         message = serializer.validated_data['message']
         if message is not None:
             ip=request.META.get('REMOTE_ADDR')
-            mac=get_mac_address()
+            mac=get_mac_address(ip)
         
             # send the message to the chat consumer here
             channel_layer = get_channel_layer()
