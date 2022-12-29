@@ -70,12 +70,14 @@ TEMPLATES = [
     },
 ]
 
+# ASGI Server
 ASGI_APPLICATION = 'f_chat.asgi.application'
+# Redis Channel Layer Setting.
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("18.212.11.3", 6379)],
+            "hosts": [("127.0.0.1", 6379)],
         },
     },
 }
