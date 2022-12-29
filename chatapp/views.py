@@ -7,6 +7,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from .consumers import ChatConsumer
 
+from getmac import get_mac_address
 
 
 
@@ -17,7 +18,7 @@ def send_message(request, room_name):
         message = serializer.validated_data['message']
         if message is not None:
             ip=request.META.get('REMOTE_ADDR')
-            print(ip,"==================")
+            mac=get_mac_address()
         
             # send the message to the chat consumer here
             channel_layer = get_channel_layer()
@@ -25,7 +26,8 @@ def send_message(request, room_name):
                 f"chat_{room_name}" , {
                     "type": "chat.message", 
                     "message": message,
-                    "ip":ip
+                    "ip":ip,
+                    "mac":mac,
                     }
             )
             return Response({'message': message})
