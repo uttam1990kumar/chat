@@ -25,8 +25,13 @@ def send_message(request, room_name):
             location_data = {
                 "ip": ip_address,
                 "city": response.get("city"),
+                "postal":response.get("postal"),
+                "latitude":response.get("latitude"),
+                "longitude":response.get("longitude"),
                 "region": response.get("region"),
+                "country_capital":response.get("country_capital"),
                 "country": response.get("country_name")
+                
             }
             print(location_data,"*********************")
         
@@ -40,5 +45,5 @@ def send_message(request, room_name):
                     "mac":mac,
                     }
             )
-            return Response({'message': message})
+            return Response({'message': message, "IP Details":location_data,"Mac Addr.":mac})
     return Response(serializer.errors, status=400)
