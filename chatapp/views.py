@@ -6,7 +6,8 @@ from .serializers import ChatMessageSerializer
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from .consumers import ChatConsumer
-
+import json
+import requests
 from getmac import get_mac_address
 
 
@@ -19,6 +20,15 @@ def send_message(request, room_name):
         if message is not None:
             ip=request.META.get('REMOTE_ADDR')
             mac=get_mac_address(ip)
+            ip_address = ip
+            response = requests.get(f'https://ipapi.co/{ip_address}/json/').json()
+            location_data = {
+                "ip": ip_address,
+                "city": response.get("city"),
+                "region": response.get("region"),
+                "country": response.get("country_name")
+            }
+            print(location_data,"*********************")
         
             # send the message to the chat consumer here
             channel_layer = get_channel_layer()
