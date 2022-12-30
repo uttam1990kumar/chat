@@ -45,5 +45,5 @@ def send_message(request, room_name):
                     "mac":mac,
                     }
             )
-            return Response({'message': message, "IP Details":location_data,"Mac Addr.":mac})
+            return Response({'message': message})
     return Response(serializer.errors, status=400)
