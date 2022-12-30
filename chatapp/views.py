@@ -17,33 +17,33 @@ def send_message(request, room_name):
     serializer = ChatMessageSerializer(data=request.data)
     if serializer.is_valid():
         message = serializer.validated_data['message']
-        if message is not None:
-            ip=request.META.get('REMOTE_ADDR')
-            mac=get_mac_address(ip)
-            ip_address = ip
-            response = requests.get(f'https://ipapi.co/{ip_address}/json/').json()
-            location_data = {
-                "ip": ip_address,
-                "city": response.get("city"),
-                "postal":response.get("postal"),
-                "latitude":response.get("latitude"),
-                "longitude":response.get("longitude"),
-                "region": response.get("region"),
-                "country_capital":response.get("country_capital"),
-                "country": response.get("country_name")
-                
-            }
-            print(location_data,"*********************")
-        
-            # send the message to the chat consumer here
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"chat_{room_name}" , {
-                    "type": "chat.message", 
-                    "message": message,
-                    "ip":ip,
-                    "mac":mac,
-                    }
-            )
-            return Response({'message': message})
+    
+        ip=request.META.get('REMOTE_ADDR')
+        mac=get_mac_address(ip)
+        ip_address = ip
+        response = requests.get(f'https://ipapi.co/{ip_address}/json/').json()
+        location_data = {
+            "ip": ip_address,
+            "city": response.get("city"),
+            "postal":response.get("postal"),
+            "latitude":response.get("latitude"),
+            "longitude":response.get("longitude"),
+            "region": response.get("region"),
+            "country_capital":response.get("country_capital"),
+            "country": response.get("country_name")
+            
+        }
+        print(location_data,"*********************")
+    
+        # send the message to the chat consumer here
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"chat_{room_name}" , {
+                "type": "chat.message", 
+                "message": message,
+                "ip":ip,
+                "mac":mac,
+                }
+        )
+        return Response({'message': message, "IP Details":location_data})
     return Response(serializer.errors, status=400)
