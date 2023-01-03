@@ -42,9 +42,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from room group
     async def chat_message(self, event):
         message = event["message"]
-        ip = event["ip"]
-        mac = event["mac"]
+        room_id= event["room_id"]
         
         
         # #Send message to WebSocket
-        await self.send(text_data=json.dumps({"message": message, "ip":ip, "mac":mac}))
+        await self.send(text_data=json.dumps({"message": message, "room_id":room_id}))
